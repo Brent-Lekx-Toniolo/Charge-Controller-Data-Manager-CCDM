@@ -1,2 +1,2 @@
-# Solar-Chare-Controller-Data-Manager
+# Charge-Controller-Data-Manager (CCDM)
 coming soon.....
