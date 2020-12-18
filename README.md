@@ -6,7 +6,7 @@ Data collection from more charge controller types is in the works including othe
 If you would like to simply try CCDM, click on the "Code" button above and select "Download Zip".
 Unzip the zip folder onto your desktop and then follow the instruction in the Getting Started guide located under the Documentation folder.
 
-Please see "issues" section of this repository and filter by features to see features being worked on for future releases.
+Please see "issues" section of this repository and filter by "enhancement" to see features being worked on for future releases.
 
 License:
 This software is Licensed under the GNU Affero General Public License v3.0, see license terms inlcuded in this repository.
