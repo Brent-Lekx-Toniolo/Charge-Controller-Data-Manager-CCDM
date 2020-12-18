@@ -789,7 +789,7 @@ class CCDM_UI_class:
         #CCDM Information
         graphics_canvas.create_text(text_start_x + 10, text_start_y + 40, text = "Version:    "+ self.view_styles["Application_Version"] ,
                                     font = ("arial", base_font_size), anchor = "w")
-        graphics_canvas.create_text(text_start_x + 10, text_start_y + 70, text = "Created by and licensed (lic. pending) to: b.lekx-toniolo of S.H.H.D.I., Fort-Wisers, OoR Tech" ,
+        graphics_canvas.create_text(text_start_x + 10, text_start_y + 70, text = "Created by and licensed (GNU AGPL V3) to: b.lekx-toniolo of S.H.H.D.I., Fort-Wisers, OoR Tech" ,
                                     font = ("arial", base_font_size), anchor = "w")
         graphics_canvas.create_text(text_start_x + 10, text_start_y + 100, text = "Latest version available at: https://github.com/Brent-Lekx-Toniolo/Charge-Controller-Data-Manager-CCDM-" ,
                                     font = ("arial", base_font_size), anchor = "w")
