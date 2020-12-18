@@ -1,2 +1,4 @@
-# Charge-Controller-Data-Manager (CCDM)
-Coming soon.....estimated date for initial Beta Release version of CCDM is March 2021
+# Welcome to Charge-Controller-Data-Manager (CCDM)
+
+If you have downloaded CCDM, please check out the "Getting Started" document in the Documentation folder
+

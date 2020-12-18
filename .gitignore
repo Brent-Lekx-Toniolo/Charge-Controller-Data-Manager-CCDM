@@ -1,0 +1,7 @@
+#Visual Studio files
+*.suo
+*.bak
+*.bak*
+Project Specific Files
+
+CCDM_config_email.py

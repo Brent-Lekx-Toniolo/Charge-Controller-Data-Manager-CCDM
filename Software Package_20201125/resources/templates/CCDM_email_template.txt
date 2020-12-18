@@ -1,0 +1,8 @@
+Here are your daily results!
+
+----------------------------------------
+${BODY_MAIN_CONTENT} 
+
+----------------------------------------
+Thanks for using CCDM!
+(CCDM version: ${CCDM_CURR_VERSION})
