@@ -3,7 +3,7 @@ Welcome to CCDM (Charge Controller Data Manager) -------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This Getting Started document is designed to work with the following CCDM Version:
-0.0.1 alpha
+0.0.1 beta
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -46,36 +46,47 @@ Next Install Pillow (PIL fork) and ImageTk Modules
 		C:\User\User_Name> pip3 install pillow
 
 Step 3:
-Install on device
-		You may run CCDM on a PC or raspberry Pi.
-		Simply copy and paste the entire Charge Controller Data Manager folder onto your PC.
-		Any location is fine.......
+Install CCDM on your device
+
+		You may run CCDM on a PC or Raspberry Pi. 
+		CCDM is very lightweight and does not require a lot of memory or HDD space.
+		Once you've downloaded the CCDM repository you may unzip and then copy and paste the entire 
+		"Charge-Controller-Data-Manager-CCDM" package to any location on your device.......
 
 
 Step 4:
 Configure IP Address of you Charge Controller
 		
 		Be sure your Charge Controller and what ever device you're running CCDM on (PC, Rasp Pi etc) are 
-		networked together and able to communicate. Use Ping and other networking tools to ensure proper
+		networked together and able to communicate. Use Ping or similar networking tools to ensure proper
 		communication infrustructure is in place.
-		Locate the CCDM_config.py file, open it with any text editor, find the line that looks like the following:
+		In the package installed above in step 3, locate the CCDM_config.py file.
+		Open it with any text editor, find the line that looks like the following:
+
 		CC_IP_ADDRS = ["192.168.30.101", "192.168.30.102", "192.168.30.103", "192.168.30.104"]
-		Change the "192.168.30.101" to whatever IP address your Charge Controller resides at on your network.
-		Save the file then close the text editor.
+
+		Change the first adress "192.168.30.101" to whatever IP address your Charge Controller resides at on your network.
+		Leave the other three addresses alone. Save the file then close the text editor.
 
 
 
 Step 5:
 Start CCDM
 
+		In the package installed in step 3, locate and run CC_Data_Manager.py.
+		Here are some examples:
+
 		Linux ->
 		In Linux it is suggested to start CCDM via bash / terminal by doing the following:
-		- Navigate to where you placed CCDM Package Folder
+		- Navigate to /Charge-Controller-Data-Manager-CCDM/Software_Package_yyyymmdd 
+		  (yyyymmdd will be whatever the current build date of the package happens to be)
 		- $ python3 CC_Data_Manager.py
 
 
 		Windows ->
-		In the CCDM Package Folder start CCDM by double clicking the file CC_Data_Manager.py
+		- Navigate to /Charge-Controller-Data-Manager-CCDM/Software_Package_yyyymmdd 
+		  (yyyymmdd will be whatever the current build date of the package happens to be)
+		- Start CCDM by double clicking the file CC_Data_Manager.py
 
 
 
