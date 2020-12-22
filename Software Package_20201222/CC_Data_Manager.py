@@ -233,7 +233,24 @@ def CC_To_UI_Exchange(CC, UI, local_verbose_mode = None):
             UI.conf_widget_group[0].entry_text[3].set("Attempting Connection.....")
         else:
             UI.conf_widget_group[0].entry_text[3].set("Unknown.....")
-        
+        #Application config data
+        if ENABLE_DAILY_LOGS:
+            UI.conf_widget_group[2].entry_text[0].set("Yes")
+        else:
+            UI.conf_widget_group[2].entry_text[0].set("No")
+        if ENABLE_DAILY_EMAILS:
+            UI.conf_widget_group[2].entry_text[1].set("Yes")
+        else:
+            UI.conf_widget_group[2].entry_text[1].set("No")
+            
+        UI.conf_widget_group[2].entry_text[2].set(UI_VIEW_STYLES["UI_Mode"])
+        UI.conf_widget_group[2].entry_text[3].set(UI_VIEW_STYLES["Tab_BG_Color"])
+        UI.conf_widget_group[2].entry_text[4].set(UI_VIEW_STYLES["Widget_Group_Type"])
+        UI.conf_widget_group[2].entry_text[5].set(UI_VIEW_STYLES["Widget_Group_BG"])
+        UI.conf_widget_group[2].entry_text[6].set(UI_VIEW_STYLES["Base_Font_Size"])
+        UI.conf_widget_group[2].entry_text[7].set(str(CC_POLLING_RATE) + "    s")
+        UI.conf_widget_group[2].entry_text[8].set(CCDM_VERSION)
+                
 
 
 #Begin sorting data by Configured Charge Controller OEM and Type

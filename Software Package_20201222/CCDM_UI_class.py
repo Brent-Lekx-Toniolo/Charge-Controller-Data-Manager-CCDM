@@ -738,6 +738,33 @@ class CCDM_UI_class:
         self.conf_widget_group[1].show_group("Charge Controller General Configuration", Widgetgroup1_x, Widgetgroup1_y , frame_type = self.view_styles["Widget_Group_Type"],
                                              bg_color = self.view_styles["Widget_Group_BG"], entry_bg_color = self.view_styles["EntryWidget_BG"])
 
+
+
+        #CCDM Application Configuration Group
+        CCDMconf_widgetgroup_labels =    [
+                    "Enable Daily Logs:",
+                    "Enable Daily Emails:",
+                    "UI Mode:",
+                    "UI Tab BG Color:",
+                    "Widget Group Type:",
+                    "Widget Group Color:",
+                    "Base Font Size:",
+                    "Polling Rate:",
+                    "CCDM Version:"]
+        #Instantiate new widget group and then get dims
+        self.conf_widget_group.insert(2, BLT_UI_DataDisplayGroup_Class2(target_tab, 20, CCDMconf_widgetgroup_labels, base_font_size = self.view_styles["Base_Font_Size"]))
+        self.conf_wg_width.insert(2, self.conf_widget_group[2].get_width())
+        self.conf_wg_height.insert(2, self.conf_widget_group[2].get_height())
+
+        #Set position
+        Widgetgroup2_x = self.Detected_Screen_Width - self.conf_wg_width[2] - self.pad_x          
+        Widgetgroup2_y = self.pad_y + self.conf_wg_height[0] + self.pad_y
+
+        #Show Widget Group
+        self.conf_widget_group[2].show_group("CCDM Configuration", Widgetgroup2_x, Widgetgroup2_y , frame_type = self.view_styles["Widget_Group_Type"],
+                                             bg_color = self.view_styles["Widget_Group_BG"], entry_bg_color = self.view_styles["EntryWidget_BG"])
+
+
         #-------------------------------------------
         #Show Auto scroll check box
         AutoScroll_Checkbox = Checkbutton(target_tab, text = "Auto Scroll", variable = self.AutoScroll_State)
