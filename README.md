@@ -19,4 +19,13 @@ Use this software AT OWN RISK
 
 
 
+Version / Build History:
+
+0.0.1 - beta, build 20201222
+  -Added CCDM configuration widget group to Config tab 
+  
+0.0.1 - beta, build 20201125
+  -Initial beta release to public
+
+
 
