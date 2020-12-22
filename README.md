@@ -4,7 +4,7 @@ CCDM is a small python application written to gather data from Midnite Solar Cla
 data into a daily log files in simple text form.
 Data collection from more charge controller types is in the works including other Midnite CCs as well as products from Morningstar and Outback.
 
-If you would like to simply try CCDM, click on the "Code" button above and select "Download Zip".
+If you would like to simply try CCDM, with the master branch selected, click on the "Code" button above and select "Download Zip".
 Unzip the zip folder onto your desktop and then follow the instructions in the Getting Started guide located under the Documentation folder.
 
 Please see "issues" section of this repository and filter by "enhancement" to see features being worked on for future releases.
