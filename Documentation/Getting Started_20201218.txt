@@ -12,7 +12,7 @@ Be sure you have the proper Python interpreter installed:
 CCDM has been tested using Python Versions 3.8 and 3.9 
 
 
-		Linux ->
+		Linux/Raspbian ->
 		If you suspect you already have Python on your Linux machine, you can check in bash / terminal by entering:
 		$ python3 --version
 
@@ -33,7 +33,7 @@ Step 2:
 Next Install Pillow (PIL fork) and ImageTk Modules
 
 		
-		Linux ->
+		Linux/Raspbian ->
 		Install Pillow by entering:
 		# sudo apt-get install python3-pil
 
@@ -51,7 +51,7 @@ Install CCDM on your device
 		You may run CCDM on a PC or Raspberry Pi. 
 		CCDM is very lightweight and does not require a lot of memory or HDD space.
 		Once you've downloaded the CCDM repository you may unzip and then copy and paste the entire 
-		"Charge-Controller-Data-Manager-CCDM" package to any location on your device.......
+		"Charge-Controller-Data-Manager-CCDM" package to your devices desktop.
 
 
 Step 4:
@@ -66,18 +66,37 @@ Configure IP Address of you Charge Controller
 		CC_IP_ADDRS = ["192.168.30.101", "192.168.30.102", "192.168.30.103", "192.168.30.104"]
 
 		Change the first adress "192.168.30.101" to whatever IP address your Charge Controller resides at on your network.
-		Leave the other three addresses alone. Save the file then close the text editor.
-
-
+		Leave the other three addresses alone. Onto the next step.
 
 Step 5:
+Confirm / Configure path locations
+		
+		If you're running CCDM on a windows PC, you may save and close the CCDM_config.py file from the last step and skip onto the next step (6).
+		If you are running CCDM on a Raspberry Pi you must change some configured path locations.
+		In the same CCDM_config.py file used in the last step.
+		You will see the following comment in a couple locations: #Paths to use for PC
+		Then a few lines below will be a comment such as this: #Paths to use for pi
+		Under each of the above you'll note some code setting variables to certain path locations.
+		The default is to set up path locations for a Windows PC, these defaults must be commented out and the
+		paths for pi must be uncommented. 
+		- To comment the PC paths, simply insert a # in front of the line.
+		- To uncomment the pi paths, simply remove the # in front of the line.
+ 		There are a total of three locations this must be done for the following path variables:
+				IMAGES_PATH
+				TEMPLATES_PATH
+				LOGS_PATH
+		Save and close the file.
+
+
+
+Step 6:
 Start CCDM
 
 		In the package installed in step 3, locate and run CC_Data_Manager.py.
 		Here are some examples:
 
-		Linux ->
-		In Linux it is suggested to start CCDM via bash / terminal by doing the following:
+		Linux/Raspbian ->
+		In Linux/Raspbian it is suggested to start CCDM via bash / terminal by doing the following:
 		- Navigate to /Charge-Controller-Data-Manager-CCDM/Software_Package_yyyymmdd 
 		  (yyyymmdd will be whatever the current build date of the package happens to be)
 		- $ python3 CC_Data_Manager.py
