@@ -10,8 +10,8 @@
 #Rev Log:
    
 	
-    #Version yyyymmdd:      
-		#add revision notes for this file here, b.lekx-toniolo
+    #Version 0.0.1 - beta:      
+		#first trial beta release, b.lekx-toniolo
 
 
 #----------------------------------------------------- Imports --------------------------------------------------

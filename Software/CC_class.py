@@ -1,20 +1,20 @@
 #----------------------------------------------------- Header ---------------------------------------------------
-'''
-Charge Controller class
 
-Original author: Brent Lekx-Toniolo
-	S.H.H.D.I.
-	Fort-Wisers
-	OoR Tech
+#Charge Controller class
+
+#Original author: Brent Lekx-Toniolo
+	#S.H.H.D.I.
+	#Fort-Wisers
+	#OoR Tech
 	
 
-Rev Log:
+#Rev Log:
    
 	
-    Version yyyymmdd:      
-		add revision notes for this file here, b.lekx-toniolo
+    #Version 0.0.1 - beta:      
+		#first trial beta release, b.lekx-toniolo
 
-'''
+
 #----------------------------------------------------- Imports --------------------------------------------------
 
 from pyModbusTCP.client import ModbusClient
