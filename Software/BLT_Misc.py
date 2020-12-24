@@ -23,10 +23,13 @@ from tkinter.ttk import *
 try:
     from PIL import ImageTk,Image
 except:
-    print("Could not import from PIL, you may be missing PIL")
-    print("Pillow/PIL installation example (Linux):")
-    print("$ sudo apt-get install python3-pil")
-    print("$ sudo apt-get install python3-imaging-tk")
+    print("Could not import from Pillow (PIL), you may be missing Pillow Package")
+    print("Pillow/PIL installation example (Linux Bash/Terminal):")
+    print("python3 -m pip install -–upgrade pip")
+    print("python3 -m pip install -–upgrade Pillow")
+    print("Pillow/PIL installation example (Windows Command Prompt):")
+    print("pip3 install pillow")
+    
     input("Press Enter key to exit......")    
     exit()
 

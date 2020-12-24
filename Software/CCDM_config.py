@@ -6,20 +6,13 @@
 CCDM_VERSION = '0.0.1 - beta'
 
 #General Paths for use to access various resources --------
-#Paths to use for PC
 IMAGES_PATH = "resources/images/"
 TEMPLATES_PATH = "resources/templates/"
-#Paths to use for pi
-#IMAGES_PATH = "/home/pi/Desktop/CCDM/resources/images/"
-#TEMPLATES_PATH = "/home/pi/Desktop/CCDM/resources/templates/"
 
 #Enable and set up daily logs ---------------
 #Write a log file at the end of each day (23:30)
 ENABLE_DAILY_LOGS = True      
-#Path to use for PC
 LOGS_PATH = "CCDM_logs/"
-#Path to use for pi
-#LOGS_PATH = "/home/pi/Desktop/CCDM/CCDM_logs/"
 
 #Send daily log information via email ----------
 #see email config file for set-up of statics

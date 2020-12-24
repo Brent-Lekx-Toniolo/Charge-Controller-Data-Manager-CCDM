@@ -88,8 +88,8 @@ def main(config_file):
         exit()
     else:
         print("Configuring CCDM for "+str(CC_COUNT)+" charge controller(s).......")
+	
         
-
     
     #Build array of Charge Controllers
     for cc_index in range(CC_COUNT):
@@ -97,7 +97,7 @@ def main(config_file):
         CC.insert(cc_index, CC_class(VERBOSE_MODE, CC_NAMES[cc_index], CC_OEM_TYPES[cc_index], CC_IP_ADDRS[cc_index], CC_PORTS[cc_index], CC_TIMEOUTS[cc_index], CC_EXPECTED_MAX_POWER[cc_index]))
         #Create a new list of UI_class objects and initilize
         UI.insert(cc_index, CCDM_UI_class(UI_TITLE, UI_VIEW_STYLES, UI_SHOW_CONFIGURATION, IMAGES_PATH, VERBOSE_MODE))
-        
+    
         if UI[cc_index].init_new_UI():
             UI[cc_index].init_UI_tabs(CC[cc_index])
         else:
@@ -110,8 +110,7 @@ def main(config_file):
         BackGround_Thread[cc_index].Daemon = True         
         #Start BackGround Tasks thread
         BackGround_Thread[cc_index].start()
-
-
+	
     #Start UI Loop
     #NOTE: Only 1 controller UI for now
     UI[0].run()

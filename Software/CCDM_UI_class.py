@@ -25,10 +25,13 @@ import datetime
 try:
     from PIL import ImageTk,Image
 except:
-    print("Could not import from PIL, you may be missing PIL")
-    print("Pillow/PIL installation example (Linux):")
-    print("$ sudo apt-get install python3-pil")
-    print("$ sudo apt-get install python3-imaging-tk")
+    print("Could not import from Pillow (PIL), you may be missing Pillow Package")
+    print("Pillow/PIL installation example (Linux Bash / Terminal):")
+    print("python3 -m pip install -–upgrade pip")
+    print("python3 -m pip install -–upgrade Pillow")
+    print("Pillow/PIL installation example (Windows Comand Prompt):")
+    print("pip3 install pillow")
+
     input("Press Enter key to exit....")
     exit()
 from BLT_Misc import BLT_UI_DataDisplayGroup_Class2
@@ -820,9 +823,9 @@ class CCDM_UI_class:
                                     font = ("arial", base_font_size), anchor = "w")
         graphics_canvas.create_text(text_start_x + 10, text_start_y + 100, text = "Latest version available at: https://github.com/Brent-Lekx-Toniolo/Charge-Controller-Data-Manager-CCDM-" ,
                                     font = ("arial", base_font_size), anchor = "w")
-        graphics_canvas.create_text(text_start_x + 10, text_start_y + 130, text = "Requires: Python 3.8+, Tkinter (should come with python), Pillow (PIL fork) module, ImageTk module" ,
+        graphics_canvas.create_text(text_start_x + 10, text_start_y + 130, text = "Requires: Python 3.8+, Tkinter (should come with python), Pillow (PIL fork) package" ,
                                     font = ("arial", base_font_size), anchor = "w")
-        graphics_canvas.create_text(text_start_x + 10, text_start_y + 160, text = "Tested on OSs: Win10, Linux Mint 17, Raspian Stretch (on Pi 3B+) " ,
+        graphics_canvas.create_text(text_start_x + 10, text_start_y + 160, text = "Tested on OSs: Win10, Linux Mint 17, Raspbian Stretch (on Pi 3B+) " ,
                                     font = ("arial", base_font_size), anchor = "w")
         graphics_canvas.create_text(text_start_x + 10, text_start_y + 190, text = "Tested on the following Charge Controllers:" ,
                                     font = ("arial", base_font_size), anchor = "w")
