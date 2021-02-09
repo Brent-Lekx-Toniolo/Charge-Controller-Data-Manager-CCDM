@@ -1,19 +1,19 @@
 #----------------------------------------------------- Header ---------------------------------------------------
-'''
-CC UI class
 
-Original author: Brent Lekx-Toniolo
-	S.H.H.D.I.
-	Fort-Wisers
-	OoR Tech
+#CC UI class
 
-Rev Log:
+#Original author: Brent Lekx-Toniolo
+	#S.H.H.D.I.
+	#Fort-Wisers
+	#OoR Tech
    
 	
-    Version yyyymmdd:      
-		add revision notes for this file here, b.lekx-toniolo
+    #Version 0.0.1 - beta:      
+		#first trial beta release, b.lekx-toniolo
+    #Version 0.0.2 - beta
+                #second trial beta release (see release notes), b.lekx-toniolo
 
-'''
+
 
 #----------------------------------------------------- Imports --------------------------------------------------
 
@@ -25,10 +25,13 @@ import datetime
 try:
     from PIL import ImageTk,Image
 except:
-    print("Could not import from PIL, you may be missing PIL")
-    print("Pillow/PIL installation example (Linux):")
-    print("$ sudo apt-get install python3-pil")
-    print("$ sudo apt-get install python3-imaging-tk")
+    print("Could not import from Pillow (PIL), you may be missing Pillow Package")
+    print("Pillow/PIL installation example (Linux Bash / Terminal):")
+    print("python3 -m pip install -–upgrade pip")
+    print("python3 -m pip install -–upgrade Pillow")
+    print("Pillow/PIL installation example (Windows Comand Prompt):")
+    print("pip3 install pillow")
+
     input("Press Enter key to exit....")
     exit()
 from BLT_Misc import BLT_UI_DataDisplayGroup_Class2
@@ -88,9 +91,16 @@ class CCDM_UI_class:
         self.UI_closing = 0
         self.AutoScroll_State = tk.IntVar()
         self.datetimestamp_lastautoscroll = self.currentDateTime #preload to get things started
+        #Setup UI Root Width and Height Values
+        if self.view_styles["Width_Override"] > 0:
+            self.Detected_Screen_Width = self.view_styles["Width_Override"]
+        else:
+            self.Detected_Screen_Width = self.UI_root.winfo_screenwidth()
+        if self.view_styles["Height_Override"] > 0:
+            self.Detected_Screen_Height = self.view_styles["Height_Override"]
+        else:
+            self.Detected_Screen_Height = self.UI_root.winfo_screenheight()
 
-        self.Detected_Screen_Width = self.UI_root.winfo_screenwidth()
-        self.Detected_Screen_Height = self.UI_root.winfo_screenheight()
         self.pad_x = 10
         self.pad_y = 10
         self.pad_y_bottom = 90         #Used to take into account general OS taskbar when task bar overlays this UI class instances
@@ -107,6 +117,16 @@ class CCDM_UI_class:
 
     
         #Create instances of images that will be dynamically updated
+
+        self.image_file_solar = Image.open(self.image_storage_location + "Solar_Array.png")
+        self.source_image_solar = ImageTk.PhotoImage(self.image_file_solar)
+
+        self.image_file_wind = Image.open(self.image_storage_location + "wind_icon.png")
+        self.source_image_wind = ImageTk.PhotoImage(self.image_file_wind)
+        
+        self.image_file_none = Image.open(self.image_storage_location + "none.png")
+        self.weather_image_none = ImageTk.PhotoImage(self.image_file_none)
+
         self.image_file_night = Image.open(self.image_storage_location + "night_icon.png")
         self.weather_image_night = ImageTk.PhotoImage(self.image_file_night)
 
@@ -118,6 +138,9 @@ class CCDM_UI_class:
 
         self.image_file_sunny = Image.open(self.image_storage_location + "sunny_icon.png")
         self.weather_image_sunny = ImageTk.PhotoImage(self.image_file_sunny)
+
+        self.image_file_sunny_shaded = Image.open(self.image_storage_location + "sunny_icon_shaded.png")
+        self.weather_image_sunny_shaded = ImageTk.PhotoImage(self.image_file_sunny_shaded)
 
         self.weather_image_label = None
 
@@ -305,6 +328,7 @@ class CCDM_UI_class:
             controller_widgetgroup_labels_col1 =    [
                     "MAC address:",
                     "Model:",
+                    "Serial:",
                     "HW Rev:",
                     "FW Rev:",
                     variable_label_1,
@@ -315,7 +339,6 @@ class CCDM_UI_class:
                     "Lifetime Ahr:",
                     "Spare",
                     "Spare:",
-                    "Spare:",
                     variable_label_3]
             controller_widgetgroup_labels_col2 = None
             #Instantiate new widget group and then get dims
@@ -325,7 +348,7 @@ class CCDM_UI_class:
             
             #Set group location
             group_x = self.Detected_Screen_Width - (self.wg_width[1] + self.pad_x)
-            group_y = self.pad_y
+            group_y = self.pad_y + 30 #Add 30 to push down below Auto Scroll check box
             
         
         #Show Widget Group
@@ -368,7 +391,8 @@ class CCDM_UI_class:
                     "Shunt Temperature:",
                     "Shunt Current:",
                     "Calculated Load Current:",
-                    "Calculated Load Power:"]
+                    "Calculated Load Power:",
+                    "Net Ahr:"]
         self.widget_group.insert(4, BLT_UI_DataDisplayGroup_Class2(target_tab, 15, shunt_widgetgroup_labels, base_font_size = self.view_styles["Base_Font_Size"]))
         self.wg_width.insert(4, self.widget_group[4].get_width())
         self.wg_height.insert(4, self.widget_group[4].get_height())
@@ -440,6 +464,11 @@ class CCDM_UI_class:
         #Battery Widget Group
         self.widget_group[5].show_group("Battery Data",  Widgetgroup5_x, Widgetgroup5_y, frame_type = self.view_styles["Widget_Group_Type"],
                                         bg_color = self.view_styles["Widget_Group_BG"], entry_bg_color = self.view_styles["EntryWidget_BG"])
+        
+
+        #Place initial input source image
+        self.source_image_label = Label(self.tab[0], image = self.source_image_solar)
+        self.source_image_label.place(x = self.pad_x, y = (self.Detected_Screen_Height / 2) - self.pad_y_bottom)
 
         #Place initial default dynamic weather image (night moon)
         self.weather_image_label = Label(self.tab[0], image = self.weather_image_night)
@@ -453,13 +482,6 @@ class CCDM_UI_class:
 
     #------------------------------------------------------------------------------------------------------------------------------
     def init_static_images(self, target_tab, CC_type):
-        
-        #Solar Array Image
-        image_file = Image.open(self.image_storage_location+"Solar_Array.png")
-        source_image = ImageTk.PhotoImage(image_file)
-        source_image_label = Label(target_tab, image=source_image)
-        source_image_label.image = source_image
-        source_image_label.place(x = self.pad_x, y = (self.Detected_Screen_Height / 2) - self.pad_y_bottom)
 
         #Midnite Classic Image
         #First set proper image file name for Charge Controller configured
@@ -533,24 +555,51 @@ class CCDM_UI_class:
     #------------------------------------------------------------------------------------------------------------------------------
     def update_dynamic_images(self, CC):
         
-        #Sunny / Partly Cloudy / Cloudy / Night Image
-        if CC.Input_Watts != None and CC.expected_max_power != None and CC.Charge_Stage_Message != None:
+        #---------- Input Source Image (Solar Array / Wind Turbine) ----------------
+        if CC.oem_series != None and CC.MPPT_Mode != None:
+            if CC.oem_series == "Midnite - Classic":
+                #Solar Mode
+                if CC.MPPT_Mode == "1" or CC.MPPT_Mode == "3" or CC.MPPT_Mode == "9" or CC.MPPT_Mode == "11":  
+                    self.source_image_label.configure(image = self.source_image_solar)
+                #Wind Mode
+                elif CC.MPPT_Mode == "5" or CC.MPPT_Mode == "7":
+                    self.source_image_label.configure(image = self.source_image_wind)
+        
+            elif CC.oem_series == "Tristar - MPPT 60":
+                #Solar Array Image
+                self.source_image_label.configure(image = self.source_image_solar)
+
+
+        #------------ Weather Images (Sunny / Partly Cloudy / Cloudy / Night)------------------
+        if CC.oem_series != None and CC.Input_Watts != None and CC.expected_max_power != None and CC.Charge_Stage_Message != None and CC.MPPT_Mode != None:
             fCC_Input_Power = float(CC.Input_Watts)
+
+            #Only update weather images for CCs in solar mode
+            if CC.MPPT_Mode == "1" or CC.MPPT_Mode == "3" or CC.MPPT_Mode == "9" or CC.MPPT_Mode == "11":     
+                #PV Partially Shaded    
+                if CC.oem_series == "Midnite - Classic" and CC.InfoData_FlagsBin[9] != None and CC.InfoData_FlagsBin[9] == "1":
+                    self.weather_image_label.configure(image = self.weather_image_sunny_shaded)
+
+                else:
+                    if CC.Charge_Stage_Message[0:6] == "Absorb" or CC.Charge_Stage_Message[0:5] == "Float" or CC.Charge_Stage_Message[0:5] == "Equalize" :
+                        self.weather_image_label.configure(image = self.weather_image_sunny)
+                            
+                    elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) >= 0.7:
+                        self.weather_image_label.configure(image = self.weather_image_sunny)
+                            
+                    elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) < 0.7 and (fCC_Input_Power / float(CC.expected_max_power)) >= 0.2:
+                        self.weather_image_label.configure(image = self.weather_image_partly_cloudy)
+                            
+                    elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) < 0.2:
+                        self.weather_image_label.configure(image = self.weather_image_cloudy)
+                            
+                    else:
+                        self.weather_image_label.configure(image = self.weather_image_night)
+                        
+            #Blank weather images in wind mode
+            elif CC.MPPT_Mode == "5" or CC.MPPT_Mode == "7":
+                self.weather_image_label.configure(image = self.weather_image_none)
                 
-            if CC.Charge_Stage_Message[0:6] == "Absorb" or CC.Charge_Stage_Message[0:5] == "Float" or CC.Charge_Stage_Message[0:5] == "Equalize" :
-                self.weather_image_label.configure(image = self.weather_image_sunny)
-                    
-            elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) >= 0.7:
-                self.weather_image_label.configure(image = self.weather_image_sunny)
-                    
-            elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) < 0.7 and (fCC_Input_Power / float(CC.expected_max_power)) >= 0.2:
-                self.weather_image_label.configure(image = self.weather_image_partly_cloudy)
-                    
-            elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) < 0.2:
-                self.weather_image_label.configure(image = self.weather_image_cloudy)
-                    
-            else:
-                self.weather_image_label.configure(image = self.weather_image_night)
         #-----------------------
         #Process Auto scroll feature
         if self.AutoScroll_State.get() == 1:
@@ -674,7 +723,7 @@ class CCDM_UI_class:
             self.misc_wg_height.insert(2, self.misc_widget_group[2].get_height())
             
             #Set Position of Info Flags widget group based on screen size and widget group width
-            Widgetgroup2_x = (self.Detected_Screen_Width - self.self_wg_width[2]) / 2
+            Widgetgroup2_x = (self.Detected_Screen_Width - self.misc_wg_width[2]) / 2
             #Check of group overruns other groups
             if Widgetgroup2_x <= self.pad_x + self.misc_wg_width[1] + self.pad_x:
                 Widgetgroup2_x = self.pad_x + self.misc_wg_width[1] + self.pad_x
@@ -716,12 +765,12 @@ class CCDM_UI_class:
         #Controller Configuration Group
         CCconf_widgetgroup_labels =    [
                     "Nominal Battery Voltage:",
-                    "Absorb Setpoint:",
-                    "Absorb Time:",
+                    "Absorb Voltage Setpoint:",
+                    "Absorb Time Setpoint:",
                     "Absorb End Amps:",
-                    "Float Setpoint:",
-                    "EQ Setpoint:",
-                    "EQ Time:",
+                    "Float Voltage Setpoint:",
+                    "EQ Voltage Setpoint:",
+                    "EQ Time Setpoint:",
                     "Maximum Temp Comp:",
                     "Minimum Temp Comp:",
                     "Temperature Comp Coeff:"]
@@ -820,9 +869,9 @@ class CCDM_UI_class:
                                     font = ("arial", base_font_size), anchor = "w")
         graphics_canvas.create_text(text_start_x + 10, text_start_y + 100, text = "Latest version available at: https://github.com/Brent-Lekx-Toniolo/Charge-Controller-Data-Manager-CCDM-" ,
                                     font = ("arial", base_font_size), anchor = "w")
-        graphics_canvas.create_text(text_start_x + 10, text_start_y + 130, text = "Requires: Python 3.8+, Tkinter (should come with python), Pillow (PIL fork) module, ImageTk module" ,
+        graphics_canvas.create_text(text_start_x + 10, text_start_y + 130, text = "Requires: Python 3.8+, Tkinter (should come with python), Pillow (PIL fork) package" ,
                                     font = ("arial", base_font_size), anchor = "w")
-        graphics_canvas.create_text(text_start_x + 10, text_start_y + 160, text = "Tested on OSs: Win10, Linux Mint 17, Raspian Stretch (on Pi 3B+) " ,
+        graphics_canvas.create_text(text_start_x + 10, text_start_y + 160, text = "Tested on OSs: Win10, Linux Mint 17, Raspbian Stretch (on Pi 3B+) " ,
                                     font = ("arial", base_font_size), anchor = "w")
         graphics_canvas.create_text(text_start_x + 10, text_start_y + 190, text = "Tested on the following Charge Controllers:" ,
                                     font = ("arial", base_font_size), anchor = "w")

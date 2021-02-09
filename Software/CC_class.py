@@ -1,20 +1,22 @@
 #----------------------------------------------------- Header ---------------------------------------------------
-'''
-Charge Controller class
 
-Original author: Brent Lekx-Toniolo
-	S.H.H.D.I.
-	Fort-Wisers
-	OoR Tech
+#Charge Controller class
+
+#Original author: Brent Lekx-Toniolo
+	#S.H.H.D.I.
+	#Fort-Wisers
+	#OoR Tech
 	
 
-Rev Log:
+#Rev Log:
    
 	
-    Version yyyymmdd:      
-		add revision notes for this file here, b.lekx-toniolo
+    #Version 0.0.1 - beta:      
+		#first trial beta release, b.lekx-toniolo
+    #Version 0.0.2 - beta
+                #second trial beta release (see release notes), b.lekx-toniolo
 
-'''
+
 #----------------------------------------------------- Imports --------------------------------------------------
 
 from pyModbusTCP.client import ModbusClient
@@ -25,7 +27,7 @@ try:
 except:
     Valid_Dependancy = False
     
-from BLT_Misc import linear_scaling, int_to_signed
+from BLT_Misc import linear_scaling, int_to_signed, int_to_signed32, DegC_to_DegF
 import datetime
 #----------------------------------------------------------------------------------------------------------------
 
@@ -86,6 +88,8 @@ class CC_class:
         self.HW_Rev = None
         self.PCB_Temperature = None
         self.FET_Temperature = None
+        self.PCB_Temperature_DegF = None
+        self.FET_Temperature_DegF = None
         self.Charge_Stage = None
         self.Charge_Stage_Message = None
         self.Last_VoC_Measured = None
@@ -112,11 +116,14 @@ class CC_class:
                 
         self.Shunt_Installed = None
         self.Shunt_Temperature = None
+        self.Shunt_Temperature_DegF = None
         self.Shunt_Current = None
+        self.Shunt_Net_Ahr = None
 
         self.Battery_Voltage = None
         self.Battery_SOC = None
         self.Battery_Temperature = None
+        self.Battery_Temperature_DegF = None
         self.Battery_Remaining = None
         self.Battery_Capacity = None
 
@@ -138,6 +145,7 @@ class CC_class:
         self.Calced_TimeTo_Batt50 = None
         self.Calced_Batt_50Capacity = None
         self.Calced_Batt_FreezeEstimate = None
+        self.Calced_Batt_FreezeEstimate_DegF = None
 
         #Accumulated Values
         self.Absorb_Time_Count = None
@@ -150,9 +158,12 @@ class CC_class:
         self.Peak_Output_Voltage = "0"
         self.Peak_Output_Current = "0"
         self.Peak_CC_Temperature = "0"
+        self.Peak_CC_Temperature_DegF = "0"
 
-        self.Max_Batt_Temperature = "0"
+        self.Max_Batt_Temperature = "-999"
         self.Min_Batt_Temperature = "999"
+        self.Max_Batt_Temperature_DegF = "-999"
+        self.Min_Batt_Temperature_DegF = "999"
         self.Max_Batt_Voltage = "0"
         self.Min_Batt_Voltage = "999"
         
@@ -235,7 +246,7 @@ class CC_class:
 
             #Begin reading and storing data based on configured Controller OEM and Type
             
-            #Midnite Solar, Clssic Type Charge Controller -----------------------------------
+            #------------------------------ Midnite Solar, Clssic Type Charge Controller -----------------------------------
             if self.oem_series == "Midnite - Classic":
                 #NOTE: Reg address and actual address are offset by 1 (EXAMPLE: to access Reg4101 you must read at address value 4100)
                 
@@ -306,10 +317,14 @@ class CC_class:
                 if incoming_data:
                     self.InfoData_FlagsBin = str('{0:032b}'.format( int(incoming_data[0] + (int(incoming_data[1]) << 16 ))))
                     self.InfoData_Flags = str(hex(int(incoming_data[0] + (int(incoming_data[1]) << 16)))).translate(str.maketrans("abcdef", "ABCDEF"))
-                    #Convert Battery Temp to a signed value
+                    #Gather Various Temperatures, sign and also store F values from C
                     self.Battery_Temperature = str(float(int_to_signed(incoming_data[2]) / 10))
+                    self.Battery_Temperature_DegF = str(DegC_to_DegF(float(self.Battery_Temperature)))
                     self.FET_Temperature = str(incoming_data[3] / 10)
                     self.PCB_Temperature = str(incoming_data[4] / 10)
+                    self.FET_Temperature_DegF = str(DegC_to_DegF(float(self.FET_Temperature)))
+                    self.PCB_Temperature_DegF = str(DegC_to_DegF(float(self.PCB_Temperature)))
+                    
                 else:
                         print("   -> Error Reading Reg4130-4134 block of "+self.name)
 
@@ -369,13 +384,23 @@ class CC_class:
                 
 
                 #NOTE the following are only applicable if Shunt is found (WhizBangJr)
-                if self.Shunt_Installed:        
+                if self.Shunt_Installed:
+
+                    #Holding Reg4369-4370 = Net Amp Hours
+                    incoming_data = self.TCP_Mod_Client.read_holding_registers(4368, 3)
+                    if incoming_data:
+                        #Assemble and Calculate Net Amp Hours
+                        self.Shunt_Net_Ahr = str(float(int_to_signed32((incoming_data[1] << 16) + incoming_data[0])))
+                    else:
+                            print("   -> Error Reading Reg4368-4369 block of "+self.name)
+
                     #Holding Reg4371-4373 = WhizBangJR (Shunt) Current, WhizBangJr (Shunt) CRC (MSB) and Temperature (LSB), SoC %
                     incoming_data = self.TCP_Mod_Client.read_holding_registers(4370, 3)
                     if incoming_data:
                         #Convert shunt current to signed value
                         self.Shunt_Current = str(float(int_to_signed(incoming_data[0]) / 10))
                         self.Shunt_Temperature = str(((incoming_data[1] & 0xFF00 >>8) - 50))
+                        self.Shunt_Temperature_DegF = str(DegC_to_DegF(float(self.Shunt_Temperature)))
                         self.Battery_SOC = str(incoming_data[2])
                         
                     else:
@@ -417,9 +442,10 @@ class CC_class:
                         print("   -> Error Reading Reg28673-28674 block of "+self.name)
 
 
-            #Tristar,  MPPT 60 Type Charge Controller ---------------------------------------- 
+            #---------------------------- Tristar,  MPPT 60 Type Charge Controller ---------------------------------------- 
             elif self.oem_series == "Tristar - MPPT 60":
                 #Call MPPT Mode method to set mode (static in these controllers)
+                self.MPPT_Mode = 0x000B
                 self.MPPT_Mode_Message = self.set_mpptmode_msg(0)
                 #Set Shunt_Installed false as this option does not exist on Tristar MPPT Charge Controllers
                 self.Shunt_Installed = False
@@ -461,7 +487,9 @@ class CC_class:
                 incoming_data = self.TCP_Mod_Client.read_holding_registers(35, 3)
                 if incoming_data:
                     self.PCB_Temperature = str(incoming_data[0])
+                    self.PCB_Temperature_DegF = str(DegC_to_DegF(float(self.PCB_Temperature)))
                     self.Battery_Temperature = str(incoming_data[2])
+                    self.Battery_Temperature_DegF = str(DegC_to_DegF(float(self.Battery_Temperature)))
                 else:
                         print("   -> Error Reading 0x0023-0x0025 block of "+self.name)
                 
@@ -636,14 +664,16 @@ class CC_class:
                 #Peak CC Temperature, daily
                 if self.FET_Temperature and float(self.FET_Temperature) > float(self.Peak_CC_Temperature):
                     self.Peak_CC_Temperature = self.FET_Temperature
+                    self.Peak_CC_Temperature_DegF = str(DegC_to_DegF(float(self.Peak_CC_Temperature)))
 
                 #Maximum Battery Temperature, daily
                 if self.Battery_Temperature and float(self.Battery_Temperature) > float(self.Max_Batt_Temperature):
                     self.Max_Batt_Temperature = self.Battery_Temperature
+                    self.Max_Batt_Temperature_DegF = str(DegC_to_DegF(float(self.Max_Batt_Temperature)))
                 #Minimum Battery Temperature, daily
                 if self.Battery_Temperature and float(self.Battery_Temperature) < float(self.Min_Batt_Temperature):
                     self.Min_Batt_Temperature = self.Battery_Temperature
-
+                    self.Min_Batt_Temperature_DegF = str(DegC_to_DegF(float(self.Min_Batt_Temperature)))
                 #Maximum Battery Voltage, daily
                 if self.Output_Voltage and float(self.Battery_Voltage) > float(self.Max_Batt_Voltage):
                     self.Max_Batt_Voltage = self.Battery_Voltage
