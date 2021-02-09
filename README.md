@@ -20,7 +20,7 @@ Use this software AT OWN RISK
 
 
 Version / Build History:
-0.0.2 - beta
+0.0.2 - beta, build 20210228
 	See Issues list for closed our 0.0.2 - beta feature additions 
 	- Added CCDM Configuration file data to Config Tab
 	- Added wind turbine image for Midnite Classics running in MPPT Wind Mode
