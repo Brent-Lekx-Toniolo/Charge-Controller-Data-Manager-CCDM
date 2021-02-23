@@ -102,7 +102,7 @@ def find_longest_length(list):
 #General function for returning a given 32 bit integer value as signed data
 def int_to_signed32(data_to_sign):
     if data_to_sign & 0x80000000: #Signed bit is on (32nd bit)
-        signed_data = ((data_to_sign & 0x7FFFFFFF)-2147483647)
+        signed_data = ((data_to_sign & 0x7FFFFFFF)-2147483648)
     else:
          signed_data= data_to_sign
          
@@ -111,7 +111,7 @@ def int_to_signed32(data_to_sign):
 #General function for returning a given 16 bit integer value as signed data
 def int_to_signed(data_to_sign):
     if data_to_sign & 0x8000: #Signed bit is on (16th bit)
-        signed_data = ((data_to_sign & 0x7FFF)-32767)
+        signed_data = ((data_to_sign & 0x7FFF)-32768)
     else:
          signed_data= data_to_sign
          
