@@ -647,6 +647,7 @@ class CC_class:
                 #Battery Estimated Freezing Point
                 if self.Battery_SOC:
                     self.Calced_Batt_FreezeEstimate = str(linear_scaling(int(self.Battery_SOC), 100, 0, -50, 0)) #Current Battery SOC, Upper SOC%, Lower SOC%, Freeze Point @ Upper SOC%, Freeeze Point @ Lower SOC%
+                    self.Calced_Batt_FreezeEstimate_DegF = str(DegC_to_DegF(float(self.Calced_Batt_FreezeEstimate)))
 
                 #Capture peaks and other various process Events ----------------------------------
                 #Peak Inputs Watts, daily

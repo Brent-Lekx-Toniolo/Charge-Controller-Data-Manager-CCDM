@@ -279,9 +279,9 @@ def CC_To_UI_Exchange(CC, UI, local_verbose_mode = None):
             UI.widget_group[1].entry_text[4].set(CC.FW_Rev)
         if UI_TEMPERATURE_TYPE == "C":
             if CC.PCB_Temperature != None:
-                UI.widget_group[1].entry_text[5].set(CC.PCB_Temperature_DegF+"    deg.C")
+                UI.widget_group[1].entry_text[5].set(CC.PCB_Temperature+"    deg.C")
             if CC.FET_Temperature != None:
-                UI.widget_group[1].entry_text[6].set(CC.FET_Temperature_DegF+"    deg.C")
+                UI.widget_group[1].entry_text[6].set(CC.FET_Temperature+"    deg.C")
         if UI_TEMPERATURE_TYPE == "F":
             if CC.PCB_Temperature_DegF != None:
                 UI.widget_group[1].entry_text[5].set(CC.PCB_Temperature_DegF+"    deg.F")
@@ -383,8 +383,12 @@ def CC_To_UI_Exchange(CC, UI, local_verbose_mode = None):
                 UI.widget_group[5].entry_text[4].set(CC.Battery_Remaining+"    Ahr")
             if CC.Calced_TimeTo_Batt50 != None:
                 UI.widget_group[5].entry_text[5].set(CC.Calced_TimeTo_Batt50+"    Hours")
-            if CC.Calced_Batt_FreezeEstimate != None:
-                UI.widget_group[5].entry_text[6].set(CC.Calced_Batt_FreezeEstimate+"    degC")
+            if UI_TEMPERATURE_TYPE == "C":
+                if CC.Calced_Batt_FreezeEstimate != None:
+                    UI.widget_group[5].entry_text[6].set(CC.Calced_Batt_FreezeEstimate+"    deg.C")
+            if UI_TEMPERATURE_TYPE == "F":
+                if CC.Calced_Batt_FreezeEstimate_DegF != None:
+                    UI.widget_group[5].entry_text[6].set(CC.Calced_Batt_FreezeEstimate_DegF+"    deg.F")
         elif CC.Shunt_Installed == False:
             UI.widget_group[5].entry_text[2].set("No Shunt")
             UI.widget_group[5].entry_text[3].set("No Shunt")
@@ -690,12 +694,19 @@ def write_log_files(CC, currentDateTime):
     new_log_file.write("    Peak CC Output Power: "+str(CC.Peak_Output_Watts)+" Watts \n")
     new_log_file.write("    Peak CC Output Voltage: "+str(CC.Peak_Output_Voltage)+" Vdc \n")
     new_log_file.write("    Peak CC Output Current: "+str(CC.Peak_Output_Current)+" A \n\n")
-    new_log_file.write("    Peak CC Temperature: "+str(CC.Peak_CC_Temperature)+" deg.C \n\n")
+    if UI_TEMPERATURE_TYPE == "C":
+        new_log_file.write("    Peak CC Temperature: "+str(CC.Peak_CC_Temperature)+" deg.C \n\n")
+    if UI_TEMPERATURE_TYPE == "F":
+        new_log_file.write("    Peak CC Temperature: "+str(CC.Peak_CC_Temperature_DegF)+" deg.F \n\n")
     new_log_file.write("    KWh harvested today: "+str(CC.KWh)+" KWh \n")
     new_log_file.write("    Ahr harvested today: "+str(CC.Ahr)+" Ahr \n\n")
 
-    new_log_file.write("    Max Battery Temperature: "+str(CC.Max_Batt_Temperature)+" deg.C \n")
-    new_log_file.write("    Min Battery Temperature: "+str(CC.Min_Batt_Temperature)+" deg.C \n")
+    if UI_TEMPERATURE_TYPE == "C":
+        new_log_file.write("    Max Battery Temperature: "+str(CC.Max_Batt_Temperature)+" deg.C \n")
+        new_log_file.write("    Min Battery Temperature: "+str(CC.Min_Batt_Temperature)+" deg.C \n")
+    if UI_TEMPERATURE_TYPE == "F":
+        new_log_file.write("    Max Battery Temperature: "+str(CC.Max_Batt_Temperature_DegF)+" deg.F \n")
+        new_log_file.write("    Min Battery Temperature: "+str(CC.Min_Batt_Temperature_DegF)+" deg.F \n")
     new_log_file.write("    Max Battery Voltage: "+str(CC.Max_Batt_Voltage)+" Vdc \n")
     new_log_file.write("    Min Battery Voltage: "+str(CC.Min_Batt_Voltage)+" Vdc \n\n")
 
