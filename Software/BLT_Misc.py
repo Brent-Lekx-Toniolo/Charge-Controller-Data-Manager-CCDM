@@ -12,6 +12,12 @@
 	
     #Version 0.0.1 - beta:      
 		#first trial beta release, b.lekx-toniolo
+<<<<<<< HEAD:Software/BLT_Misc.py
+=======
+    #Version 0.0.2 - beta:      
+		#second trial beta release, b.lekx-toniolo
+
+>>>>>>> dev:Software Package_20201222/BLT_Misc.py
 
 
 #----------------------------------------------------- Imports --------------------------------------------------
@@ -71,6 +77,16 @@ def linear_scaling(unscaled_data, unscaled_upperlimit, unscaled_lowerlimit, scal
     #Finally, return the scaled data
     return scaled_data
 
+#--------------------------------------------------------------------------------------------------------------------
+#General function for converting Temperature data from DegC to Deg F
+def DegC_to_DegF(Temp_In_DegC):
+    Temp_In_DegF = (Temp_In_DegC * 9/5) + 32
+
+    #Round to 1 dec place
+    Temp_In_DegF = round(Temp_In_DegF, 1)
+    
+    return Temp_In_DegF
+
 
 #------------------------------------------------------------------------------------------------------------------
 # General function for returning longest length (in chars) in a list
@@ -86,10 +102,19 @@ def find_longest_length(list):
     return longest_found
 
 #--------------------------------------------------------------------------------------------------------------------
+#General function for returning a given 32 bit integer value as signed data
+def int_to_signed32(data_to_sign):
+    if data_to_sign & 0x80000000: #Signed bit is on (32nd bit)
+        signed_data = ((data_to_sign & 0x7FFFFFFF)-2147483648)
+    else:
+         signed_data= data_to_sign
+         
+    return signed_data
+#--------------------------------------------------------------------------------------------------------------------
 #General function for returning a given 16 bit integer value as signed data
 def int_to_signed(data_to_sign):
     if data_to_sign & 0x8000: #Signed bit is on (16th bit)
-        signed_data = ((data_to_sign & 0x7FFF)-32767)
+        signed_data = ((data_to_sign & 0x7FFF)-32768)
     else:
          signed_data= data_to_sign
          

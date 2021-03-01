@@ -16,6 +16,8 @@ Rev Log:
                 future revs will create multi platformed UI options as well as database connectivity and data log options
     0.0.1 - beta, b.lekx-toniolo
                 general preperation for distribution on GitHUB
+    0.0.2 - beta
+                second trial beta release (see release notes), b.lekx-toniolo
 
 
 
@@ -45,7 +47,13 @@ A fork of this software package has been made availible on the Charge-Controller
 import datetime
 import time
 from BLT_Misc import *
-from CCDM_config import *
+
+#Import custom config if created, otherwise use default
+try: 
+    from CCDM_config import *
+except:
+    print("No custom config file found, importing default file")
+    from CCDM_config_default import *
 
 #Import custom email config if created, otherwise use default
 try: 
@@ -269,13 +277,27 @@ def CC_To_UI_Exchange(CC, UI, local_verbose_mode = None):
             UI.widget_group[1].entry_text[3].set(CC.HW_Rev)
         if CC.FW_Rev != None:
             UI.widget_group[1].entry_text[4].set(CC.FW_Rev)
-        if CC.PCB_Temperature != None:
-            UI.widget_group[1].entry_text[5].set(CC.PCB_Temperature+"    deg.C")
-        if CC.FET_Temperature != None:
-            UI.widget_group[1].entry_text[6].set(CC.FET_Temperature+"    deg.C")
+        if UI_TEMPERATURE_TYPE == "C":
+            if CC.PCB_Temperature != None:
+                UI.widget_group[1].entry_text[5].set(CC.PCB_Temperature+"    deg.C")
+            if CC.FET_Temperature != None:
+                UI.widget_group[1].entry_text[6].set(CC.FET_Temperature+"    deg.C")
+        if UI_TEMPERATURE_TYPE == "F":
+            if CC.PCB_Temperature_DegF != None:
+                UI.widget_group[1].entry_text[5].set(CC.PCB_Temperature_DegF+"    deg.F")
+            if CC.FET_Temperature_DegF != None:
+                UI.widget_group[1].entry_text[6].set(CC.FET_Temperature_DegF+"    deg.F")
+
         #Column 2
         if CC.Charge_Stage_Message != None:
             UI.widget_group[1].entry_text[7].set(CC.Charge_Stage_Message)
+            if CC.Charge_Stage_Message[0:6] == "Absorb" or CC.Charge_Stage_Message[0:5] == "Float":
+                UI.widget_group[1].generic_entry[7].config(bg = "green2")
+            elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT":
+                UI.widget_group[1].generic_entry[7].config(bg = "yellow")
+            else:
+                UI.widget_group[1].generic_entry[7].config(bg = UI_VIEW_STYLES["EntryWidget_BG"])
+
         if CC.MPPT_Mode_Message != None:
             UI.widget_group[1].entry_text[8].set(CC.MPPT_Mode_Message)
         if CC.KWh_Lifetime != None:
@@ -321,26 +343,37 @@ def CC_To_UI_Exchange(CC, UI, local_verbose_mode = None):
         #Shunt Data Display Widgets (General Tab)
         if CC.Shunt_Installed == True:
             UI.widget_group[4].entry_text[0].set("Yes")
-            if CC.Shunt_Temperature != None:
-                UI.widget_group[4].entry_text[1].set(CC.Shunt_Temperature+"    deg.C")
+            if UI_TEMPERATURE_TYPE == "C":
+                if CC.Shunt_Temperature != None:
+                    UI.widget_group[4].entry_text[1].set(CC.Shunt_Temperature+"    deg.C")
+            if UI_TEMPERATURE_TYPE == "F":
+                if CC.Shunt_Temperature_DegF != None:
+                    UI.widget_group[4].entry_text[1].set(CC.Shunt_Temperature_DegF+"    deg.F")
             if CC.Shunt_Current != None:
                 UI.widget_group[4].entry_text[2].set(CC.Shunt_Current+"    A")
             if CC.Calced_Load_Current != None:
                 UI.widget_group[4].entry_text[3].set(CC.Calced_Load_Current+"    A")
             if CC.Calced_Load_Power != None:
                 UI.widget_group[4].entry_text[4].set(CC.Calced_Load_Power+"    Watts")
+            if CC.Shunt_Net_Ahr != None:
+                UI.widget_group[4].entry_text[5].set(CC.Shunt_Net_Ahr+"    Ahr")
         elif CC.Shunt_Installed == False:
             UI.widget_group[4].entry_text[0].set("No")
             UI.widget_group[4].entry_text[1].set("No Shunt")
             UI.widget_group[4].entry_text[2].set("No Shunt")
             UI.widget_group[4].entry_text[3].set("No Shunt")
             UI.widget_group[4].entry_text[4].set("No Shunt")
+            UI.widget_group[4].entry_text[5].set("No Shunt")
 
         #Battery Data Display Widgets (General Tab)
         if CC.Battery_Voltage != None:
             UI.widget_group[5].entry_text[0].set(CC.Battery_Voltage+"    Vdc")
-        if CC.Battery_Temperature != None:
-            UI.widget_group[5].entry_text[1].set(CC.Battery_Temperature+"    deg.C")
+        if UI_TEMPERATURE_TYPE == "C":
+            if CC.Battery_Temperature != None:
+                UI.widget_group[5].entry_text[1].set(CC.Battery_Temperature+"    deg.C")
+        if UI_TEMPERATURE_TYPE == "F":
+            if CC.Battery_Temperature_DegF != None:
+                UI.widget_group[5].entry_text[1].set(CC.Battery_Temperature_DegF+"    deg.F")
         if CC.Shunt_Installed == True:
             if CC.Battery_SOC != None:
                 UI.widget_group[5].entry_text[2].set(CC.Battery_SOC+"    %")
@@ -350,8 +383,12 @@ def CC_To_UI_Exchange(CC, UI, local_verbose_mode = None):
                 UI.widget_group[5].entry_text[4].set(CC.Battery_Remaining+"    Ahr")
             if CC.Calced_TimeTo_Batt50 != None:
                 UI.widget_group[5].entry_text[5].set(CC.Calced_TimeTo_Batt50+"    Hours")
-            if CC.Calced_Batt_FreezeEstimate != None:
-                UI.widget_group[5].entry_text[6].set(CC.Calced_Batt_FreezeEstimate+"    degC")
+            if UI_TEMPERATURE_TYPE == "C":
+                if CC.Calced_Batt_FreezeEstimate != None:
+                    UI.widget_group[5].entry_text[6].set(CC.Calced_Batt_FreezeEstimate+"    deg.C")
+            if UI_TEMPERATURE_TYPE == "F":
+                if CC.Calced_Batt_FreezeEstimate_DegF != None:
+                    UI.widget_group[5].entry_text[6].set(CC.Calced_Batt_FreezeEstimate_DegF+"    deg.F")
         elif CC.Shunt_Installed == False:
             UI.widget_group[5].entry_text[2].set("No Shunt")
             UI.widget_group[5].entry_text[3].set("No Shunt")
@@ -368,12 +405,20 @@ def CC_To_UI_Exchange(CC, UI, local_verbose_mode = None):
             UI.misc_widget_group[1].entry_text[2].set(CC.Peak_Output_Voltage+"    Vdc")
         if CC.Peak_Output_Current != None:
             UI.misc_widget_group[1].entry_text[3].set(CC.Peak_Output_Current+"    A")
-        if CC.Peak_CC_Temperature != None:
-            UI.misc_widget_group[1].entry_text[4].set(CC.Peak_CC_Temperature+"    deg.C")
-        if CC.Max_Batt_Temperature != None:
-            UI.misc_widget_group[1].entry_text[5].set(CC.Max_Batt_Temperature+"    deg.C")
-        if CC.Min_Batt_Temperature != None:
-            UI.misc_widget_group[1].entry_text[6].set(CC.Min_Batt_Temperature+"    deg.C")
+        if UI_TEMPERATURE_TYPE == "C":
+            if CC.Peak_CC_Temperature != None:
+                UI.misc_widget_group[1].entry_text[4].set(CC.Peak_CC_Temperature+"    deg.C")
+            if CC.Max_Batt_Temperature != None:
+                UI.misc_widget_group[1].entry_text[5].set(CC.Max_Batt_Temperature+"    deg.C")
+            if CC.Min_Batt_Temperature != None:
+                UI.misc_widget_group[1].entry_text[6].set(CC.Min_Batt_Temperature+"    deg.C")
+        if UI_TEMPERATURE_TYPE == "F":
+            if CC.Peak_CC_Temperature_DegF != None:
+                UI.misc_widget_group[1].entry_text[4].set(CC.Peak_CC_Temperature_DegF+"    deg.F")
+            if CC.Max_Batt_Temperature_DegF != None:
+                UI.misc_widget_group[1].entry_text[5].set(CC.Max_Batt_Temperature_DegF+"    deg.F")
+            if CC.Min_Batt_Temperature_DegF != None:
+                UI.misc_widget_group[1].entry_text[6].set(CC.Min_Batt_Temperature_DegF+"    deg.F")
         if CC.Max_Batt_Voltage != None:
             UI.misc_widget_group[1].entry_text[7].set(CC.Max_Batt_Voltage+"    Vdc")
         if CC.Min_Batt_Voltage != None:
@@ -649,12 +694,19 @@ def write_log_files(CC, currentDateTime):
     new_log_file.write("    Peak CC Output Power: "+str(CC.Peak_Output_Watts)+" Watts \n")
     new_log_file.write("    Peak CC Output Voltage: "+str(CC.Peak_Output_Voltage)+" Vdc \n")
     new_log_file.write("    Peak CC Output Current: "+str(CC.Peak_Output_Current)+" A \n\n")
-    new_log_file.write("    Peak CC Temperature: "+str(CC.Peak_CC_Temperature)+" deg.C \n\n")
+    if UI_TEMPERATURE_TYPE == "C":
+        new_log_file.write("    Peak CC Temperature: "+str(CC.Peak_CC_Temperature)+" deg.C \n\n")
+    if UI_TEMPERATURE_TYPE == "F":
+        new_log_file.write("    Peak CC Temperature: "+str(CC.Peak_CC_Temperature_DegF)+" deg.F \n\n")
     new_log_file.write("    KWh harvested today: "+str(CC.KWh)+" KWh \n")
     new_log_file.write("    Ahr harvested today: "+str(CC.Ahr)+" Ahr \n\n")
 
-    new_log_file.write("    Max Battery Temperature: "+str(CC.Max_Batt_Temperature)+" deg.C \n")
-    new_log_file.write("    Min Battery Temperature: "+str(CC.Min_Batt_Temperature)+" deg.C \n")
+    if UI_TEMPERATURE_TYPE == "C":
+        new_log_file.write("    Max Battery Temperature: "+str(CC.Max_Batt_Temperature)+" deg.C \n")
+        new_log_file.write("    Min Battery Temperature: "+str(CC.Min_Batt_Temperature)+" deg.C \n")
+    if UI_TEMPERATURE_TYPE == "F":
+        new_log_file.write("    Max Battery Temperature: "+str(CC.Max_Batt_Temperature_DegF)+" deg.F \n")
+        new_log_file.write("    Min Battery Temperature: "+str(CC.Min_Batt_Temperature_DegF)+" deg.F \n")
     new_log_file.write("    Max Battery Voltage: "+str(CC.Max_Batt_Voltage)+" Vdc \n")
     new_log_file.write("    Min Battery Voltage: "+str(CC.Min_Batt_Voltage)+" Vdc \n\n")
 

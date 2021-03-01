@@ -20,12 +20,25 @@ Use this software AT OWN RISK
 
 
 Version / Build History:
+0.0.2 - beta, build tbd
+
+	See Issues list for closed out 0.0.2 - beta feature additions 
+	- Added CCDM Configuration file data to Config Tab
+	- Added wind turbine image for Midnite Classics running in MPPT Wind Mode
+	- Broke out Config file to "default" and non default (user) to prevent over-write on future upgrades
+	- Added some extra text on various widgets to better explain data point (per end users feedback)
+	- Added abilit to change between DegC and DegF for temperature data points
+	- Added partial shading icon
+	- Added ability to enter UI opening size overrides in config file
+	- Added Net Amp hours data point per end user request	
 
 0.0.1 - beta, build 20201222
-  -Added CCDM configuration widget group to Config tab 
+
+ 	-Added CCDM configuration widget group to Config tab 
   
 0.0.1 - beta, build 20201125
-  -Initial beta release to public
+
+ 	-Initial beta release to public
 
 
 
