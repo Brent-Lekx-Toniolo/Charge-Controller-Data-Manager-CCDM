@@ -12,12 +12,9 @@
 	
     #Version 0.0.1 - beta:      
 		#first trial beta release, b.lekx-toniolo
-<<<<<<< HEAD:Software/BLT_Misc.py
-=======
     #Version 0.0.2 - beta:      
 		#second trial beta release, b.lekx-toniolo
 
->>>>>>> dev:Software Package_20201222/BLT_Misc.py
 
 
 #----------------------------------------------------- Imports --------------------------------------------------

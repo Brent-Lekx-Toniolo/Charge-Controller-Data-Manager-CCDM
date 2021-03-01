@@ -10,11 +10,8 @@
 	
     #Version 0.0.1 - beta:      
 		#first trial beta release, b.lekx-toniolo
-<<<<<<< HEAD:Software/CCDM_UI_class.py
-=======
     #Version 0.0.2 - beta
                 #second trial beta release (see release notes), b.lekx-toniolo
->>>>>>> dev:Software Package_20201222/CCDM_UI_class.py
 
 
 
