@@ -27,7 +27,7 @@ Version / Build History:
 	- Added wind turbine image for Midnite Classics running in MPPT Wind Mode
 	- Broke out Config file to "default" and non default (user) to prevent over-write on future upgrades
 	- Added some extra text on various widgets to better explain data point (per end users feedback)
-	- Added abilit to change between DegC and DegF for temperature data points
+	- Added ability to change between DegC and DegF for temperature data points
 	- Added partial shading icon
 	- Added ability to enter UI opening size overrides in config file
 	- Added Net Amp hours data point per end user request	
