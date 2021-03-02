@@ -320,8 +320,8 @@ class CC_class:
                     #Gather Various Temperatures, sign and also store F values from C
                     self.Battery_Temperature = str(float(int_to_signed(incoming_data[2]) / 10))
                     self.Battery_Temperature_DegF = str(DegC_to_DegF(float(self.Battery_Temperature)))
-                    self.FET_Temperature = str(incoming_data[3] / 10)
-                    self.PCB_Temperature = str(incoming_data[4] / 10)
+                    self.FET_Temperature = str(float(int_to_signed(incoming_data[3]) / 10))
+                    self.PCB_Temperature = str(float(int_to_signed(incoming_data[4]) / 10))
                     self.FET_Temperature_DegF = str(DegC_to_DegF(float(self.FET_Temperature)))
                     self.PCB_Temperature_DegF = str(DegC_to_DegF(float(self.PCB_Temperature)))
                     
