@@ -138,7 +138,8 @@ def BackGround_Tasks(CC, UI, daily_log_written, daily_email_sent):
             #Transfer data between CC <-> UI -----------------
             CC_To_UI_Exchange(CC[cc_index], UI[cc_index], VERBOSE_MODE)
             #Update UI dynamic images with updated CC data
-            UI[cc_index].update_dynamic_images(CC[cc_index])
+            if UI_VIEW_STYLES["UI_Mode"] == "graphics":
+                UI[cc_index].update_dynamic_images(CC[cc_index])
 
             #Connect if not already done ----------------
             #NOTE: for future seperate each controller connection to different threads

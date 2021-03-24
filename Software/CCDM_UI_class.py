@@ -347,8 +347,8 @@ class CCDM_UI_class:
             self.wg_height.insert(1, self.widget_group[1].get_height())
             
             #Set group location
-            group_x = self.Detected_Screen_Width - (self.wg_width[1] + self.pad_x)
-            group_y = self.pad_y + 30 #Add 30 to push down below Auto Scroll check box
+            group_x = self.pad_x
+            group_y = 220 #Static Value just below connection widget
             
         
         #Show Widget Group
@@ -466,13 +466,14 @@ class CCDM_UI_class:
                                         bg_color = self.view_styles["Widget_Group_BG"], entry_bg_color = self.view_styles["EntryWidget_BG"])
         
 
-        #Place initial input source image
-        self.source_image_label = Label(self.tab[0], image = self.source_image_solar)
-        self.source_image_label.place(x = self.pad_x, y = (self.Detected_Screen_Height / 2) - self.pad_y_bottom)
+        if self.view_styles["UI_Mode"] == "graphics":
+            #Place initial input source image
+            self.source_image_label = Label(self.tab[0], image = self.source_image_solar)
+            self.source_image_label.place(x = self.pad_x, y = (self.Detected_Screen_Height / 2) - self.pad_y_bottom)
 
-        #Place initial default dynamic weather image (night moon)
-        self.weather_image_label = Label(self.tab[0], image = self.weather_image_night)
-        self.weather_image_label.place(x = 45, y = (self.pad_y + self.wg_height[0] + self.pad_y))
+            #Place initial default dynamic weather image (night moon)
+            self.weather_image_label = Label(self.tab[0], image = self.weather_image_night)
+            self.weather_image_label.place(x = 45, y = (self.pad_y + self.wg_height[0] + self.pad_y))
 
         #-------------------------------------------
         #Show Auto scroll check box
