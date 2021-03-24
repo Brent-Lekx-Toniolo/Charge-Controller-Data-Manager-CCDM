@@ -20,6 +20,13 @@ Use this software AT OWN RISK
 
 
 Version / Build History:
+
+0.0.2 - beta, build 20210323
+	- Removed all dynamic images in lists-only  UI Mode
+	- Moved Controller widget to left hand side of UI in lists-only UI Mode
+
+
+
 0.0.2 - beta, build tbd
 
 	See Issues list for closed out 0.0.2 - beta feature additions 
