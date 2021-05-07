@@ -28,7 +28,7 @@ Version / Build History:
 
 
 
-0.0.2 - beta, build tbd
+0.0.2 - beta
 
 	See Issues list for closed out 0.0.2 - beta feature additions 
 	- Added CCDM Configuration file data to Config Tab
