@@ -84,6 +84,8 @@ def main(config_file):
     UI = []
     daily_log_written = False
     daily_email_sent = False
+    test_log_written = False
+    test_email_sent = False
     
 
 #add find cc routine here later for number of ccs found on network
@@ -140,6 +142,9 @@ def BackGround_Tasks(CC, UI, daily_log_written, daily_email_sent):
             #Update UI dynamic images with updated CC data
             if UI_VIEW_STYLES["UI_Mode"] == "graphics":
                 UI[cc_index].update_dynamic_images(CC[cc_index])
+            #Update UI control elements    
+            enable_email_testPB = ENABLE_DAILY_LOGS and ENABLE_DAILY_EMAILS and CC[cc_index].conn_state   
+            UI[cc_index].update_control_elements(enable_email_testPB)
 
             #Connect if not already done ----------------
             #NOTE: for future seperate each controller connection to different threads
@@ -157,7 +162,8 @@ def BackGround_Tasks(CC, UI, daily_log_written, daily_email_sent):
                     print("   -> Connection to "+CC[cc_index].name+" failed")
 
             #Logging and Email processes at end of day ------------
-            if (currentDateTime.hour == 23) and (currentDateTime.minute == 30):
+            if ((currentDateTime.hour == 23) and (currentDateTime.minute == 30)) or UI[cc_index].email_test_req:
+                UI[cc_index].update_control_elements(enable_email_testPB)
                 #Write Log Files if enabled
                 if ENABLE_DAILY_LOGS:
                     if daily_log_written == False:
@@ -174,12 +180,12 @@ def BackGround_Tasks(CC, UI, daily_log_written, daily_email_sent):
                         daily_email_sent = send_daily_email(currentDateTime)
                         if VERBOSE_MODE and daily_email_sent:
                             print("Daily email sent")
-                        
+                        UI[cc_index].reset_email_req()
+                       
             else:
                 daily_log_written = False
                 daily_email_sent = False
 
-                
  
         #Check for exiting request from any UI, break while loop if so    
         if UI[cc_index].UI_closing:

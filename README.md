@@ -21,6 +21,11 @@ Use this software AT OWN RISK
 
 Version / Build History:
 
+0.0.2 - beta, build 20210624
+
+	- Added in "Test Email" button to Configuration Tab
+	- Some small interel re-arrangement of code plus additional comments / whitespace
+
 0.0.2 - beta, build 20210323
 
 	- Removed all dynamic images in lists-only  UI Mode

@@ -91,6 +91,9 @@ class CCDM_UI_class:
         self.UI_closing = 0
         self.AutoScroll_State = tk.IntVar()
         self.datetimestamp_lastautoscroll = self.currentDateTime #preload to get things started
+        self.Test_Email_PB = None
+        self.email_test_req = None
+        
         #Setup UI Root Width and Height Values
         if self.view_styles["Width_Override"] > 0:
             self.Detected_Screen_Width = self.view_styles["Width_Override"]
@@ -143,7 +146,6 @@ class CCDM_UI_class:
         self.weather_image_sunny_shaded = ImageTk.PhotoImage(self.image_file_sunny_shaded)
 
         self.weather_image_label = None
-
 
         #------------------------------------------------------------------------------------------------------------------------------
     def init_new_UI(self):
@@ -553,60 +555,7 @@ class CCDM_UI_class:
 
             #Finally pack canvas items
             graphics_canvas.pack(expand = 1, fill = "both")
-    #------------------------------------------------------------------------------------------------------------------------------
-    def update_dynamic_images(self, CC):
-        
-        #---------- Input Source Image (Solar Array / Wind Turbine) ----------------
-        if CC.oem_series != None and CC.MPPT_Mode != None:
-            if CC.oem_series == "Midnite - Classic":
-                #Solar Mode
-                if CC.MPPT_Mode == "1" or CC.MPPT_Mode == "3" or CC.MPPT_Mode == "9" or CC.MPPT_Mode == "11":  
-                    self.source_image_label.configure(image = self.source_image_solar)
-                #Wind Mode
-                elif CC.MPPT_Mode == "5" or CC.MPPT_Mode == "7":
-                    self.source_image_label.configure(image = self.source_image_wind)
-        
-            elif CC.oem_series == "Tristar - MPPT 60":
-                #Solar Array Image
-                self.source_image_label.configure(image = self.source_image_solar)
-
-
-        #------------ Weather Images (Sunny / Partly Cloudy / Cloudy / Night)------------------
-        if CC.oem_series != None and CC.Input_Watts != None and CC.expected_max_power != None and CC.Charge_Stage_Message != None and CC.MPPT_Mode != None:
-            fCC_Input_Power = float(CC.Input_Watts)
-
-            #Only update weather images for CCs in solar mode
-            if CC.MPPT_Mode == "1" or CC.MPPT_Mode == "3" or CC.MPPT_Mode == "9" or CC.MPPT_Mode == "11":     
-                #PV Partially Shaded    
-                if CC.oem_series == "Midnite - Classic" and CC.InfoData_FlagsBin[9] != None and CC.InfoData_FlagsBin[9] == "1":
-                    self.weather_image_label.configure(image = self.weather_image_sunny_shaded)
-
-                else:
-                    if CC.Charge_Stage_Message[0:6] == "Absorb" or CC.Charge_Stage_Message[0:5] == "Float" or CC.Charge_Stage_Message[0:5] == "Equalize" :
-                        self.weather_image_label.configure(image = self.weather_image_sunny)
-                            
-                    elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) >= 0.7:
-                        self.weather_image_label.configure(image = self.weather_image_sunny)
-                            
-                    elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) < 0.7 and (fCC_Input_Power / float(CC.expected_max_power)) >= 0.2:
-                        self.weather_image_label.configure(image = self.weather_image_partly_cloudy)
-                            
-                    elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) < 0.2:
-                        self.weather_image_label.configure(image = self.weather_image_cloudy)
-                            
-                    else:
-                        self.weather_image_label.configure(image = self.weather_image_night)
-                        
-            #Blank weather images in wind mode
-            elif CC.MPPT_Mode == "5" or CC.MPPT_Mode == "7":
-                self.weather_image_label.configure(image = self.weather_image_none)
-                
-        #-----------------------
-        #Process Auto scroll feature
-        if self.AutoScroll_State.get() == 1:
-            self.auto_scroll()
-
-    #------------------------------------------------------------------------------------------------------------------------------
+     #------------------------------------------------------------------------------------------------------------------------------
     def init_misc_display(self, target_tab, CC):
         #Create Widgets and Graphics on Misc Tab
 
@@ -819,6 +768,12 @@ class CCDM_UI_class:
         #Show Auto scroll check box
         AutoScroll_Checkbox = Checkbutton(target_tab, text = "Auto Scroll", variable = self.AutoScroll_State)
         AutoScroll_Checkbox.place(x = self.Detected_Screen_Width - 100, y = self.pad_y)
+
+        #-------------------------------------------
+        #Test Log / Email Button
+        self.Test_Email_PB = Button(target_tab, text = "Test Email", command = self.set_email_req)
+        self.Test_Email_PB.place(x = self.Detected_Screen_Width - 100, y = self.pad_y + 50)
+        self.Test_Email_PB["state"] = "disabled" #Disabled by default
             
 
     #------------------------------------------------------------------------------------------------------------------------------
@@ -900,8 +855,10 @@ class CCDM_UI_class:
         #Show Auto scroll check box
         AutoScroll_Checkbox = Checkbutton(target_tab, text = "Auto Scroll", variable = self.AutoScroll_State)
         AutoScroll_Checkbox.place(x = self.Detected_Screen_Width - 100, y = self.pad_y)
+        
 
-
+    #------------------------------------------------------------------------------------------------------------------------------
+    #-------------------------------------------------------- Update Methods ------------------------------------------------------
     #------------------------------------------------------------------------------------------------------------------------------
     def blank_all_datawidgets(self):
         #Routine to blank out entry widgets if required
@@ -921,6 +878,77 @@ class CCDM_UI_class:
                 elif widget_group==2:
                     for entry_in_group in range(len(self.conf_widget_group[widget_group].generic_entry)):                   #detemine amount of entry widgets in widget group
                         self.conf_widget_group[widget_group].generic_entry[entry_in_group].config(bg = self.view_styles["EntryWidget_BG"])       #blank
+
+
+    #------------------------------------------------------------------------------------------------------------------------------
+    def update_dynamic_images(self, CC):
+        
+        #---------- Input Source Image (Solar Array / Wind Turbine) ----------------
+        if CC.oem_series != None and CC.MPPT_Mode != None:
+            if CC.oem_series == "Midnite - Classic":
+                #Solar Mode
+                if CC.MPPT_Mode == "1" or CC.MPPT_Mode == "3" or CC.MPPT_Mode == "9" or CC.MPPT_Mode == "11":  
+                    self.source_image_label.configure(image = self.source_image_solar)
+                #Wind Mode
+                elif CC.MPPT_Mode == "5" or CC.MPPT_Mode == "7":
+                    self.source_image_label.configure(image = self.source_image_wind)
+        
+            elif CC.oem_series == "Tristar - MPPT 60":
+                #Solar Array Image
+                self.source_image_label.configure(image = self.source_image_solar)
+
+
+        #------------ Weather Images (Sunny / Partly Cloudy / Cloudy / Night)------------------
+        if CC.oem_series != None and CC.Input_Watts != None and CC.expected_max_power != None and CC.Charge_Stage_Message != None and CC.MPPT_Mode != None:
+            fCC_Input_Power = float(CC.Input_Watts)
+
+            #Only update weather images for CCs in solar mode
+            if CC.MPPT_Mode == "1" or CC.MPPT_Mode == "3" or CC.MPPT_Mode == "9" or CC.MPPT_Mode == "11":     
+                #PV Partially Shaded    
+                if CC.oem_series == "Midnite - Classic" and CC.InfoData_FlagsBin[9] != None and CC.InfoData_FlagsBin[9] == "1":
+                    self.weather_image_label.configure(image = self.weather_image_sunny_shaded)
+
+                else:
+                    if CC.Charge_Stage_Message[0:6] == "Absorb" or CC.Charge_Stage_Message[0:5] == "Float" or CC.Charge_Stage_Message[0:5] == "Equalize" :
+                        self.weather_image_label.configure(image = self.weather_image_sunny)
+                            
+                    elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) >= 0.7:
+                        self.weather_image_label.configure(image = self.weather_image_sunny)
+                            
+                    elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) < 0.7 and (fCC_Input_Power / float(CC.expected_max_power)) >= 0.2:
+                        self.weather_image_label.configure(image = self.weather_image_partly_cloudy)
+                            
+                    elif CC.Charge_Stage_Message[0:9] == "Bulk MPPT" and (fCC_Input_Power / float(CC.expected_max_power)) < 0.2:
+                        self.weather_image_label.configure(image = self.weather_image_cloudy)
+                            
+                    else:
+                        self.weather_image_label.configure(image = self.weather_image_night)
+                        
+            #Blank weather images in wind mode
+            elif CC.MPPT_Mode == "5" or CC.MPPT_Mode == "7":
+                self.weather_image_label.configure(image = self.weather_image_none)
+                
+
+
+   #------------------------------------------------------------------------------------------------------------------------------
+    def update_control_elements(self, enable_email_testing = False):
+
+        #-----------------------
+        #Process Auto scroll feature
+        if self.AutoScroll_State.get() == 1:
+            self.auto_scroll()
+            
+
+        #-----------------------
+        #Update Status of Test Log / Email button
+        if enable_email_testing:
+            self.Test_Email_PB["state"] = "normal"
+            if self.email_test_req == 1:
+                self.Test_Email_PB['text'] = "Testing"
+            else:
+                self.Test_Email_PB['text'] = "Test Email"
+        else:
+            self.Test_Email_PB["state"] = "disabled" 
                 
     #------------------------------------------------------------------------------------------------------------------------------
     def on_exit(self):
@@ -963,4 +991,12 @@ class CCDM_UI_class:
                 self.datetimestamp_lastautoscroll = datetime.datetime.now()
 
     #------------------------------------------------------------------------------------------------------------------------------
-    
+    def set_email_req(self):
+        self.email_test_req = True
+        
+    #------------------------------------------------------------------------------------------------------------------------------
+    def reset_email_req(self):
+        self.email_test_req = False
+        
+
+  
