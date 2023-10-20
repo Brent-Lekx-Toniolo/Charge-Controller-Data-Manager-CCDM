@@ -11,7 +11,7 @@
     #Version 0.0.1 - beta:      
 		#first trial beta release, b.lekx-toniolo
     #Version 0.0.2 - beta
-                #second trial beta release (see release notes), b.lekx-toniolo
+                #second trial beta release (see release / build notes), b.lekx-toniolo
 
 
 
@@ -48,7 +48,7 @@ class CCDM_UI_class:
 
     """CCDM UI Class"""
 
-    def __init__(self, title, view_styles, show_conf, image_storage_location, verbose_mode=None):
+    def __init__(self, title, view_styles, show_conf, image_storage_location, build_level, verbose_mode=None):
         """Constructor
 
         verbose_mode: used to enable all methods to annunciation during runtime 
@@ -77,6 +77,7 @@ class CCDM_UI_class:
         self.view_styles = view_styles
         self.show_conf = show_conf
         self.image_storage_location = image_storage_location
+        self.CCDM_build_level = build_level
 
  
         #Init interals
@@ -737,6 +738,23 @@ class CCDM_UI_class:
         self.conf_widget_group[1].show_group("Charge Controller General Configuration", Widgetgroup1_x, Widgetgroup1_y , frame_type = self.view_styles["Widget_Group_Type"],
                                              bg_color = self.view_styles["Widget_Group_BG"], entry_bg_color = self.view_styles["EntryWidget_BG"])
 
+        #Shunt Config Group
+        #CCDM Application Configuration Group
+        Shuntconf_widgetgroup_labels =    [
+                    "Battery Capacity:",
+                    "Battery Efficiency:"]
+        #Instantiate new widget group and then get dims
+        self.conf_widget_group.insert(2, BLT_UI_DataDisplayGroup_Class2(target_tab, 20, Shuntconf_widgetgroup_labels, base_font_size = self.view_styles["Base_Font_Size"]))
+        self.conf_wg_width.insert(2, self.conf_widget_group[2].get_width())
+        self.conf_wg_height.insert(2, self.conf_widget_group[2].get_height())
+
+        #Set position
+        Widgetgroup2_x = self.pad_x          
+        Widgetgroup2_y = self.pad_y + Widgetgroup1_y + self.conf_wg_height[1] + self.pad_y
+
+        #Show Widget Group
+        self.conf_widget_group[2].show_group("Shunt Configuration", Widgetgroup2_x, Widgetgroup2_y , frame_type = self.view_styles["Widget_Group_Type"],
+                                             bg_color = self.view_styles["Widget_Group_BG"], entry_bg_color = self.view_styles["EntryWidget_BG"])
 
 
         #CCDM Application Configuration Group
@@ -750,17 +768,17 @@ class CCDM_UI_class:
                     "Base Font Size:",
                     "Polling Rate:",
                     "CCDM Version:"]
-        #Instantiate new widget group and then get dims
-        self.conf_widget_group.insert(2, BLT_UI_DataDisplayGroup_Class2(target_tab, 20, CCDMconf_widgetgroup_labels, base_font_size = self.view_styles["Base_Font_Size"]))
-        self.conf_wg_width.insert(2, self.conf_widget_group[2].get_width())
-        self.conf_wg_height.insert(2, self.conf_widget_group[2].get_height())
+       #Instantiate new widget group and then get dims
+        self.conf_widget_group.insert(3, BLT_UI_DataDisplayGroup_Class2(target_tab, 20, CCDMconf_widgetgroup_labels, base_font_size = self.view_styles["Base_Font_Size"]))
+        self.conf_wg_width.insert(3, self.conf_widget_group[3].get_width())
+        self.conf_wg_height.insert(3, self.conf_widget_group[3].get_height())
 
         #Set position
-        Widgetgroup2_x = self.Detected_Screen_Width - self.conf_wg_width[2] - self.pad_x          
-        Widgetgroup2_y = self.pad_y + self.conf_wg_height[0] + self.pad_y
+        Widgetgroup3_x = self.Detected_Screen_Width - self.conf_wg_width[2] - self.pad_x          
+        Widgetgroup3_y = self.pad_y + self.conf_wg_height[0] + self.pad_y
 
         #Show Widget Group
-        self.conf_widget_group[2].show_group("CCDM Configuration", Widgetgroup2_x, Widgetgroup2_y , frame_type = self.view_styles["Widget_Group_Type"],
+        self.conf_widget_group[3].show_group("CCDM Configuration", Widgetgroup3_x, Widgetgroup3_y , frame_type = self.view_styles["Widget_Group_Type"],
                                              bg_color = self.view_styles["Widget_Group_BG"], entry_bg_color = self.view_styles["EntryWidget_BG"])
 
 
@@ -819,7 +837,7 @@ class CCDM_UI_class:
         graphics_canvas.create_text(text_start_x, text_start_y, text ="About Charge Controller Data Manager (CCDM):",
                                     font = ("arial", base_font_size + 3), anchor = "w")
         #CCDM Information
-        graphics_canvas.create_text(text_start_x + 10, text_start_y + 40, text = "Version:    "+ self.view_styles["Application_Version"] ,
+        graphics_canvas.create_text(text_start_x + 10, text_start_y + 40, text = "Version:    "+ self.view_styles["Application_Version"] + ",  Build: " + self.CCDM_build_level ,
                                     font = ("arial", base_font_size), anchor = "w")
         graphics_canvas.create_text(text_start_x + 10, text_start_y + 70, text = "Created by and licensed (GNU AGPL V3) to: b.lekx-toniolo of S.H.H.D.I., Fort-Wisers, OoR Tech" ,
                                     font = ("arial", base_font_size), anchor = "w")

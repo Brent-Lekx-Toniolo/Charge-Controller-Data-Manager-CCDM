@@ -14,7 +14,7 @@
     #Version 0.0.1 - beta:      
 		#first trial beta release, b.lekx-toniolo
     #Version 0.0.2 - beta
-                #second trial beta release (see release notes), b.lekx-toniolo
+                #second trial beta release (see release / build notes), b.lekx-toniolo
 
 
 #----------------------------------------------------- Imports --------------------------------------------------
@@ -126,6 +126,7 @@ class CC_class:
         self.Battery_Temperature_DegF = None
         self.Battery_Remaining = None
         self.Battery_Capacity = None
+        self.Battery_EFF = None
 
         self.Conf_Nominal_Voltage = None
         self.Conf_Absorb_Setpoint = None
@@ -307,7 +308,7 @@ class CC_class:
                 incoming_data = self.TCP_Mod_Client.read_holding_registers(4124, 5)
                 if incoming_data:
                     self.Ahr = str(incoming_data[0])  
-                    self.KWh_Lifetime = str(incoming_data[1] + (incoming_data[2] << 16))
+                    self.KWh_Lifetime = str((incoming_data[1] + (incoming_data[2] << 16)) / 10)
                     self.Ahr_Lifetime = str(incoming_data[3] + (incoming_data[4] <<16))
                 else:
                         print("   -> Error Reading Reg4125-4129 block of "+self.name)
@@ -421,6 +422,14 @@ class CC_class:
                         
                     else:
                             print("   -> Error Reading Reg4381 of "+self.name)
+
+                    #Holding RegTBD = Battery Efficiency (Need to confirm this reg location)
+                    incoming_data = self.TCP_Mod_Client.read_holding_registers(4380, 1)
+                    if incoming_data:
+                        self.Battery_EFF = "TBD"
+                        
+                    else:
+                            print("   -> Error Reading Reg4386 of "+self.name)
 
                 #Holding Reg16385-16390 = Release Version, Net Version, Release Build (2 regs), Net Build (2 regs) 
                 incoming_data = self.TCP_Mod_Client.read_holding_registers(16384, 6)

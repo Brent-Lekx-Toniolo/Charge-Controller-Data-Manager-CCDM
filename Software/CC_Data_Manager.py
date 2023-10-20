@@ -17,7 +17,7 @@ Rev Log:
     0.0.1 - beta, b.lekx-toniolo
                 general preperation for distribution on GitHUB
     0.0.2 - beta
-                second trial beta release (see release notes), b.lekx-toniolo
+                second trial beta release (see release / build notes), b.lekx-toniolo
 
 
 
@@ -74,6 +74,7 @@ from email.mime.text import MIMEText
 #Global vars
 BackGround_Thread = []
 path_to_lastdailylog = None
+CCDM_build_level = "20231020"
 
 #-------------------------------------- Main Definition----------------------------------------------------------
 
@@ -106,7 +107,7 @@ def main(config_file):
         #Instantiate new list of CC_class objects
         CC.insert(cc_index, CC_class(VERBOSE_MODE, CC_NAMES[cc_index], CC_OEM_TYPES[cc_index], CC_IP_ADDRS[cc_index], CC_PORTS[cc_index], CC_TIMEOUTS[cc_index], CC_EXPECTED_MAX_POWER[cc_index]))
         #Create a new list of UI_class objects and initilize
-        UI.insert(cc_index, CCDM_UI_class(UI_TITLE, UI_VIEW_STYLES, UI_SHOW_CONFIGURATION, IMAGES_PATH, VERBOSE_MODE))
+        UI.insert(cc_index, CCDM_UI_class(UI_TITLE, UI_VIEW_STYLES, UI_SHOW_CONFIGURATION, IMAGES_PATH, CCDM_build_level, VERBOSE_MODE))
     
         if UI[cc_index].init_new_UI():
             UI[cc_index].init_UI_tabs(CC[cc_index])
@@ -249,21 +250,21 @@ def CC_To_UI_Exchange(CC, UI, local_verbose_mode = None):
             UI.conf_widget_group[0].entry_text[3].set("Unknown.....")
         #Application config data
         if ENABLE_DAILY_LOGS:
-            UI.conf_widget_group[2].entry_text[0].set("Yes")
+            UI.conf_widget_group[3].entry_text[0].set("Yes")
         else:
-            UI.conf_widget_group[2].entry_text[0].set("No")
+            UI.conf_widget_group[3].entry_text[0].set("No")
         if ENABLE_DAILY_EMAILS:
-            UI.conf_widget_group[2].entry_text[1].set("Yes")
+            UI.conf_widget_group[3].entry_text[1].set("Yes")
         else:
-            UI.conf_widget_group[2].entry_text[1].set("No")
+            UI.conf_widget_group[3].entry_text[1].set("No")
             
-        UI.conf_widget_group[2].entry_text[2].set(UI_VIEW_STYLES["UI_Mode"])
-        UI.conf_widget_group[2].entry_text[3].set(UI_VIEW_STYLES["Tab_BG_Color"])
-        UI.conf_widget_group[2].entry_text[4].set(UI_VIEW_STYLES["Widget_Group_Type"])
-        UI.conf_widget_group[2].entry_text[5].set(UI_VIEW_STYLES["Widget_Group_BG"])
-        UI.conf_widget_group[2].entry_text[6].set(UI_VIEW_STYLES["Base_Font_Size"])
-        UI.conf_widget_group[2].entry_text[7].set(str(CC_POLLING_RATE) + "    s")
-        UI.conf_widget_group[2].entry_text[8].set(CCDM_VERSION)
+        UI.conf_widget_group[3].entry_text[2].set(UI_VIEW_STYLES["UI_Mode"])
+        UI.conf_widget_group[3].entry_text[3].set(UI_VIEW_STYLES["Tab_BG_Color"])
+        UI.conf_widget_group[3].entry_text[4].set(UI_VIEW_STYLES["Widget_Group_Type"])
+        UI.conf_widget_group[3].entry_text[5].set(UI_VIEW_STYLES["Widget_Group_BG"])
+        UI.conf_widget_group[3].entry_text[6].set(UI_VIEW_STYLES["Base_Font_Size"])
+        UI.conf_widget_group[3].entry_text[7].set(str(CC_POLLING_RATE) + "    s")
+        UI.conf_widget_group[3].entry_text[8].set(CCDM_VERSION)
                 
 
 
@@ -471,6 +472,16 @@ def CC_To_UI_Exchange(CC, UI, local_verbose_mode = None):
                 UI.conf_widget_group[1].entry_text[8].set(CC.Conf_MinTemp_Comp+"    "+temp_comp_unit)
             if CC.Conf_TempComp_Value != None:
                 UI.conf_widget_group[1].entry_text[9].set(CC.Conf_TempComp_Value+"    mv/DegC/Cell")
+				
+            if CC.Shunt_Installed == True:
+                if CC.Battery_Capacity != None:
+                    UI.conf_widget_group[2].entry_text[0].set(CC.Battery_Capacity+"    Ahr")
+                if CC.Battery_EFF != None:
+                    UI.conf_widget_group[2].entry_text[1].set(CC.Battery_EFF+"    %")
+            elif CC.Shunt_Installed == False:
+                UI.conf_widget_group[2].entry_text[0].set("No Shunt")
+                UI.conf_widget_group[2].entry_text[1].set("No Shunt")
+
 
 
 #Data conditional based upon Charge Controller Type ----------------

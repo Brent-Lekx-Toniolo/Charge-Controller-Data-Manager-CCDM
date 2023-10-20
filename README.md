@@ -21,6 +21,12 @@ Use this software AT OWN RISK
 
 Version / Build History:
 
+0.0.2 - beta, build 20231020
+
+	- Added Build Level to About Tab
+	- Corrected Lifetime kWh display
+	- Started Adding Midnite Shunt Config data to Configuration Tab (more to come)
+
 0.0.2 - beta, build 20210624
 
 	- Added in "Test Email" button to Configuration Tab
